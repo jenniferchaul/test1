@@ -1,35 +1,43 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 
-class TestController extends AbstractController
+
+class HomeController extends AbstractController
 {
     private $client;
     private $httpclient;
 
-
-
-    public function __construct(HttpClientInterface $client)
+    public function __construct(HttpClientInterface $client )
     {
         $this->client = $client;
-
-
     }
 
     /**
-     * @Route("/test/{commune_id}/{rome_code}", name="app_test")
+     * @Route("/api/{commune_id}/{rome_code}", name="app_index")
      */
-    public function api(HttpClientInterface $httpClient, $commune_id, $rome_code): Response
+    public function api($commune_id, $rome_code, Request $request, RateLimiterFactory $anonymousApiLimiter): Response
     {
 
+        // create a limiter based on a unique identifier of the client
+        // (e.g. the client's IP address, a username/email, an API key, etc.)
+        $limiter = $anonymousApiLimiter->create($request->getClientIp());
 
+        // the argument of consume() is the number of tokens to consume
+        // and returns an object of type Limit
+        if (false === $limiter->consume(1)->isAccepted()) {
+            throw new TooManyRequestsHttpException();
+        }
 
         $curl = curl_init();
 
@@ -77,3 +85,6 @@ class TestController extends AbstractController
 return new JsonResponse($response->getContent(), $response->getStatusCode(), [], true);
     }
 }
+
+
+
