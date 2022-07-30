@@ -66,13 +66,7 @@ class HomeController extends AbstractController
         ]);
 
 
-        //Return the body of the response object as an array
-        $data = $response->toArray();
-
-
-        json_encode($data);
-
-        return new JsonResponse($data);
+        return new JsonResponse($response->getContent(), $response->getStatusCode(), [], true);
     }
 }
 

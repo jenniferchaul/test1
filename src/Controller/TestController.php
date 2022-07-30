@@ -19,12 +19,14 @@ class TestController extends AbstractController
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
+
+
     }
 
     /**
-     * @Route("/test/{commune_id}", name="app_test")
+     * @Route("/test/{commune_id}/{rome_code}", name="app_test")
      */
-    public function api(HttpClientInterface $httpClient, $commune_id): Response
+    public function api(HttpClientInterface $httpClient, $commune_id, $rome_code): Response
     {
 
 
@@ -62,10 +64,8 @@ class TestController extends AbstractController
         $httpClient = HttpClient::create();
 
 
-        $rome_codes = "M1607";
 
-
-        $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=' . $commune_id . '&rome_codes=' . $rome_codes, [
+        $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=' . $commune_id . '&rome_codes=' . $rome_code, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $access_token
             ],
@@ -74,12 +74,6 @@ class TestController extends AbstractController
 
 
 
-        //Return the body of the response object as an array
-        $data = $response->toArray();
-
-
-        json_encode($data);
-
-        return new JsonResponse($data);
+return new JsonResponse($response->getContent(), $response->getStatusCode(), [], true);
     }
 }

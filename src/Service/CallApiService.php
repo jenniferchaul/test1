@@ -53,29 +53,4 @@ class CallApiService
 
         return $access_token;
     }
-
-    private function getApi(string $access_token)
-    {
-
-
-        //Create a new client
-        $httpClient = HttpClient::create();
-
-        //Get response
-        $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=71270&rome_codes=M1607', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $access_token
-            ],
-
-        ]);
-
-
-        //Return the body of the response object as an array
-        $data = $response->toArray();
-
-
-        json_encode($data);
-
-        return new JsonResponse($data);
-    }
 }
