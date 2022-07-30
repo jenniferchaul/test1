@@ -22,10 +22,13 @@ class TestController extends AbstractController
     }
 
     /**
-     * @Route("/test", name="app_test")
+     * @Route("/test/{commune_id}", name="app_test")
      */
-    public function api(HttpClientInterface $httpClient): Response
+    public function api(HttpClientInterface $httpClient, $commune_id): Response
     {
+
+
+
         $curl = curl_init();
 
         curl_setopt_array($curl, [
@@ -57,32 +60,18 @@ class TestController extends AbstractController
 
         //Create a new client
         $httpClient = HttpClient::create();
-        //Set up request headers
-        //$headers = [
-        //    'Authorization' => 'Bearer ' . $access_token,
-        //    'Content-type' => 'application/x-www-form-urlencoded'
-        //];
-        //Get response
-
-        
 
 
         $rome_codes = "M1607";
 
-        $commune_id = array (71270,57463);
 
-        foreach($commune_id as $element)
-
-        {
-
-
-            $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=' . $element . '&rome_codes=' . $rome_codes, [
+        $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=' . $commune_id . '&rome_codes=' . $rome_codes, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $access_token
             ],
 
         ]);
-        }
+
 
 
         //Return the body of the response object as an array
