@@ -30,7 +30,6 @@ class HomeController extends AbstractController
     {
 
         // create a limiter based on a unique identifier of the client
-        // (e.g. the client's IP address, a username/email, an API key, etc.)
         $limiter = $anonymousApiLimiter->create($request->getClientIp());
 
         // the argument of consume() is the number of tokens to consume
@@ -38,6 +37,8 @@ class HomeController extends AbstractController
         if (false === $limiter->consume(1)->isAccepted()) {
             throw new TooManyRequestsHttpException();
         }
+
+        //we get the token back with curl
 
         $curl = curl_init();
 
@@ -64,23 +65,18 @@ class HomeController extends AbstractController
 
         $access_token = $result['access_token'];
 
-        ($access_token);
-
-
 
         //Create a new client
         $httpClient = HttpClient::create();
 
 
-
+        // we call the road in get. To use the api we need 2 arguments
         $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=' . $commune_id . '&rome_codes=' . $rome_code, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $access_token
             ],
 
         ]);
-
-
 
 return new JsonResponse($response->getContent(), $response->getStatusCode(), [], true);
     }
