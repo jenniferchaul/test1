@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HomeController extends AbstractController
@@ -53,35 +54,25 @@ class HomeController extends AbstractController
 
     
 
+        //Create a new client
+        $httpClient = HttpClient::create();
 
-    //Create a new client
-    $httpClient = HttpClient::create();
-    //Set up request headers
-    //$headers = [
-    //    'Authorization' => 'Bearer ' . $access_token,
-    //    'Content-type' => 'application/x-www-form-urlencoded'
-    //];
-    //Get response
-    $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=71270&rome_codes=M1607', [
-        'headers' => [
-            'Authorization' => 'Bearer ' . $access_token
-        ]
-        
-    ]);
-    //Return the body of the response object as an array
-    dd($response->toArray());
+        //Get response
+        $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=71270&rome_codes=M1607', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $access_token
+            ],
+
+        ]);
 
 
-        //dd($result['access_token']);
-        //$httpClient = HttpClient::create();
-//
-        //$response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=71270&rome_codes=M1607', [
-        //    'headers' => [
-        //        'Authorization' => 'token' .$access_token
-        //    ]
-        //]);
-        //dd($response);
+        //Return the body of the response object as an array
+        $data = $response->toArray();
+
+
+        json_encode($data);
+
+        return new JsonResponse($data);
     }
-
-    
 }
+

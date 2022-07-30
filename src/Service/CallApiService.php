@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Controller;
+namespace App\Service;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class TestController extends AbstractController
+class CallApiService
 {
     private $client;
     private $httpclient;
 
 
 
-    public function __construct(HttpClientInterface $client)
+    public function __construct(HttpClientInterface $client, $access_token)
     {
         $this->client = $client;
     }
 
-    /**
-     * @Route("/test", name="app_test")
-     */
+
+
     public function api(HttpClientInterface $httpClient): Response
     {
         $curl = curl_init();
@@ -51,38 +51,23 @@ class TestController extends AbstractController
 
         $access_token = $result['access_token'];
 
-        ($access_token);
+        return $access_token;
+    }
 
+    private function getApi(string $access_token)
+    {
 
 
         //Create a new client
         $httpClient = HttpClient::create();
-        //Set up request headers
-        //$headers = [
-        //    'Authorization' => 'Bearer ' . $access_token,
-        //    'Content-type' => 'application/x-www-form-urlencoded'
-        //];
+
         //Get response
-
-        
-
-
-        $rome_codes = "M1607";
-
-        $commune_id = array (71270,57463);
-
-        foreach($commune_id as $element)
-
-        {
-
-
-            $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=' . $element . '&rome_codes=' . $rome_codes, [
+        $response = $httpClient->request('GET', 'https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?commune_id=71270&rome_codes=M1607', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $access_token
             ],
 
         ]);
-        }
 
 
         //Return the body of the response object as an array
