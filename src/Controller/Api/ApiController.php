@@ -4,16 +4,16 @@ namespace App\Controller\Api;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 
-class HomeController extends AbstractController
+class ApiController extends AbstractController
 {
     private $client;
     private $httpclient;
@@ -37,6 +37,27 @@ class HomeController extends AbstractController
         if (false === $limiter->consume(1)->isAccepted()) {
             throw new TooManyRequestsHttpException();
         }
+
+
+        //$limiter = $anonymousApiLimiter->create($request->getClientIp());
+        //$limit = $limiter->consume();
+        //$headers = [
+        //    'X-RateLimit-Remaining' => $limit->getRemainingTokens(),
+        //    'X-RateLimit-Retry-After' => $limit->getRetryAfter()->getTimestamp(),
+        //    'X-RateLimit-Limit' => $limit->getLimit(),
+        //];
+//
+        //if (false === $limit->isAccepted()) {
+        //    return new Response(null, Response::HTTP_TOO_MANY_REQUESTS, $headers);
+        //}
+//
+        //// ...
+//
+        //$response = new Response('...');
+        //$response->headers->add($headers);
+//
+        //return $response;
+
 
         //we get the token back with curl
 
